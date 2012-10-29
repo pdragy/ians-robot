@@ -50,17 +50,13 @@ int cruise() {
       if (distance >= 100 || distance <= 0){
         Serial.println("Out of range");
         distance = 100;
-      }
-      
-      else {
+      } else {
         Serial.print(distance);
         Serial.println(" cm");
       }
-      
       if( distance < 40 && distance> 2){
          return (distance) ;
       }
-      
       val =sqrt(sq(179-(x*((179*2)/(locations*2))))); 
       myservo.write(val); // sets the servo position according to the scaled value 
       delay(200);
@@ -98,21 +94,16 @@ int check(){
 }
 
 void turn() {
-  
   analogWrite(reverse, 100);
   analogWrite(forward, 0);
-  
   digitalWrite(right, LOW);
   digitalWrite(left, LOW);
-  
   delay(2000);
   analogWrite(reverse, 0);
   analogWrite(forward, 0);
   delay(500);
-  
   digitalWrite(right, HIGH);
   digitalWrite(left, LOW);
-  
   analogWrite(forward, 100);
   analogWrite(reverse, 0);
   delay(2000);
