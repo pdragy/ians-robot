@@ -102,8 +102,14 @@ void turn() {
   analogWrite(reverse, 0);
   analogWrite(forward, 0);
   delay(500);
-  digitalWrite(right, HIGH);
-  digitalWrite(left, LOW);
+  if(val < 95){
+    digitalWrite(right, HIGH);
+    digitalWrite(left, LOW);
+  }
+  else{
+    digitalWrite(left, HIGH);
+    digitalWrite(right, LOW);
+  }
   analogWrite(forward, 100);
   analogWrite(reverse, 0);
   delay(2000);
