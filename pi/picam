@@ -1,0 +1,33 @@
+#! /bin/sh
+
+# This script should find a v4l camera, and start streaming jpg video using mjpg-streamer
+
+FRAMERATE=40
+RESOLUTION=320x240
+PORT=80
+DEVICE=/dev/video0
+WEB_DIR=/var/www/mjpg_streamer
+
+case "$1" in
+  start)
+    echo "Starting PiCam"
+    # make the directory to host the webserver
+    sudo mkdir -p  /var/www/mjpg_streamer/
+    # get our ip address, create index.html with streaming video
+    sudo sh -c "awk -v d=$(ifconfig eth0 | sed -n 2p | cut -d ":" -f2 | cut -d " " -f1) '{sub(/DUMMYIP/,d)}; 1' ./index_template.html > $WEB_DIR/index.html"
+    # start mjpg-streamer in the background with a v4l device
+    sudo mjpg_streamer -i "/usr/lib/input_uvc.so -d $DEVICE  -r $RESOLUTION  -f $FRAMERATE" -o "/usr/lib/output_http.so -p $PORT -w $WEB_DIR" 2>&1 /dev/null & 
+    ;;
+  stop)
+    echo "Stopping PiCam"
+    # lets kill all instances of mjpg_streamer
+    sudo killall mjpg_streamer 
+    ;;
+  *)
+    echo "Usage: picam {start|stop}"
+    exit 1
+    ;;
+esac
+
+exit 0
+
