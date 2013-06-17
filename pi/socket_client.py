@@ -12,4 +12,4 @@ while True:
    data = client_socket.recv(1024)
    print data
    
-socket.close()
+client_socket.close()
