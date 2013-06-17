@@ -1,12 +1,22 @@
 #! /bin/sh
 
 # This script should find a v4l camera, and start streaming jpg video using mjpg-streamer
+# You will need mjpg_streamer installed with the necessary libraries at /usr/lib
 
-FRAMERATE=40
+FRAMERATE=20
 RESOLUTION=320x240
 PORT=80
 DEVICE=/dev/video0
 WEB_DIR=/var/www/mjpg_streamer
+
+HTML_TEMPLATE="
+<!DOCTYPE html> <html><body>
+<h1>Pi Cam</h1>
+Frame Rate (fps): DUMMYFRAMERATE<br>
+Resolution: DUMMYRESOLUTION<br>
+<img src=\"http://DUMMYIP/?action=stream\" width=\"500\">
+</body></html>
+"
 
 case "$1" in
   start)
@@ -14,14 +24,15 @@ case "$1" in
     # make the directory to host the webserver
     sudo mkdir -p  /var/www/mjpg_streamer/
     # get our ip address, create index.html with streaming video. eth0 will be selected before wlan0
-    sudo sh -c "awk -v f="$FRAMERATE" -v r="$RESOLUTION" -v p=":$PORT" -v d=$(/sbin/ifconfig | grep 'inet addr:'| grep -v '127.0.0.1' | cut -d: -f2 | head -1 | awk {'printf("%s", $1) }'  ) '{sub(/DUMMYRESOLUTION/,r)};{sub(/DUMMYFRAMERATE/,f)};{sub(/DUMMYIP/,d p)}; 1' ./index_template.html > $WEB_DIR/index.html"
-    # start mjpg-streamer in the background with a v4l device
+    sudo sh -c "echo '$HTML_TEMPLATE' | awk -v f="$FRAMERATE" -v r="$RESOLUTION" -v p=":$PORT" -v d=$(/sbin/ifconfig | grep 'inet addr:'| grep -v '127.0.0.1' | cut -d: -f2 | head -1 | awk {'printf("%s", $1) }'  ) '{sub(/DUMMYRESOLUTION/,r)};{sub(/DUMMYFRAMERATE/,f)};{sub(/DUMMYIP/,d p)}; 1'  > $WEB_DIR/index.html"
+    # start mjpg-streamer in the background with a v4l device. Assumes the .so files are in /usr/lib/
     sudo mjpg_streamer -i "/usr/lib/input_uvc.so -d $DEVICE  -r $RESOLUTION  -f $FRAMERATE" -o "/usr/lib/output_http.so -p $PORT -w $WEB_DIR" 2>&1 /dev/null & 
     ;;
   stop)
     echo "Stopping PiCam"
     # lets kill all instances of mjpg_streamer
     sudo killall mjpg_streamer 
+    #sudo rm -rf /var/www/mjpg_streamer
     ;;
   *)
     echo "Usage: picam {start|stop}"
