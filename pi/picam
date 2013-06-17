@@ -13,8 +13,8 @@ case "$1" in
     echo "Starting PiCam"
     # make the directory to host the webserver
     sudo mkdir -p  /var/www/mjpg_streamer/
-    # get our ip address, create index.html with streaming video
-    sudo sh -c "awk -v d=$(ifconfig eth0 | sed -n 2p | cut -d ":" -f2 | cut -d " " -f1) '{sub(/DUMMYIP/,d)}; 1' ./index_template.html > $WEB_DIR/index.html"
+    # get our ip address, create index.html with streaming video. eth0 will be selected before wlan0
+    sudo sh -c "awk -v p=":$PORT" -v d=$(/sbin/ifconfig | grep 'inet addr:'| grep -v '127.0.0.1' | cut -d: -f2 | head -1 | awk {'printf("%s", $1) }'  ) '{sub(/DUMMYIP/,d p)}; 1' ./index_template.html > $WEB_DIR/index.html"
     # start mjpg-streamer in the background with a v4l device
     sudo mjpg_streamer -i "/usr/lib/input_uvc.so -d $DEVICE  -r $RESOLUTION  -f $FRAMERATE" -o "/usr/lib/output_http.so -p $PORT -w $WEB_DIR" 2>&1 /dev/null & 
     ;;
