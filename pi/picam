@@ -3,11 +3,15 @@
 # This script should find a v4l camera, and start streaming jpg video using mjpg-streamer
 # You will need mjpg_streamer installed with the necessary libraries at /usr/lib
 
-FRAMERATE=20
-RESOLUTION=320x240
-PORT=80
+FRAMERATE=15
+RESOLUTION=640x480
+PORT=8000
 DEVICE=/dev/video0
 WEB_DIR=/var/www/mjpg_streamer
+# works on pi
+MY_IP=`/sbin/ifconfig | grep 'inet addr:'| grep -v '127.0.0.1' | cut -d: -f2 | head -1 | awk {'printf("%s", $1)}'`
+# works on osx 
+#MY_IP=`/sbin/ifconfig | grep 'inet '| grep -v '127.0.0.1' | cut -d' ' -f2 | head -1 | awk {'printf("%s", $1)}'`
 
 HTML_TEMPLATE="
 <!DOCTYPE html> <html><body>
@@ -24,9 +28,12 @@ case "$1" in
     # make the directory to host the webserver
     sudo mkdir -p  /var/www/mjpg_streamer/
     # get our ip address, create index.html with streaming video. eth0 will be selected before wlan0
-    sudo sh -c "echo '$HTML_TEMPLATE' | awk -v f="$FRAMERATE" -v r="$RESOLUTION" -v p=":$PORT" -v d=$(/sbin/ifconfig | grep 'inet addr:'| grep -v '127.0.0.1' | cut -d: -f2 | head -1 | awk {'printf("%s", $1) }'  ) '{sub(/DUMMYRESOLUTION/,r)};{sub(/DUMMYFRAMERATE/,f)};{sub(/DUMMYIP/,d p)}; 1'  > $WEB_DIR/index.html"
+    sudo sh -c "echo '$HTML_TEMPLATE' | \
+    awk -v f="$FRAMERATE" -v r="$RESOLUTION" -v p=":$PORT" -v d="$MY_IP" \
+    '{sub(/DUMMYRESOLUTION/,r)};{sub(/DUMMYFRAMERATE/,f)};{sub(/DUMMYIP/,d p)}; 1' \
+    > $WEB_DIR/index.html"
     # start mjpg-streamer in the background with a v4l device. Assumes the .so files are in /usr/lib/
-    sudo mjpg_streamer -i "/usr/lib/input_uvc.so -d $DEVICE  -r $RESOLUTION  -f $FRAMERATE" -o "/usr/lib/output_http.so -p $PORT -w $WEB_DIR" 2>&1 /dev/null & 
+    sudo bash -c "mjpg_streamer -i \"/usr/lib/input_uvc.so -d $DEVICE  -r $RESOLUTION  -f $FRAMERATE\" -o \"/usr/lib/output_http.so -p $PORT -w $WEB_DIR\" 2>&1 /dev/null &" && echo "Stream is at http://$MY_IP:$PORT/"
     ;;
   stop)
     echo "Stopping PiCam"
