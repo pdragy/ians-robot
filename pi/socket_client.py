@@ -38,10 +38,29 @@ client_socket.connect((ip, port))
 while True:
     #Recieve data from the server:
     data = client_socket.recv(1024)
-    #p_back.ChangeDutyCycle(0)
-    #p_fwd.ChangeDutyCycle(0)
-    #p_left.ChangeDutyCycle(0)
-    #p_right.ChangeDutyCycle(0)
-    print data
+    data2 = data.split( ",")
+    x = int(data2[0])
+    y = int(data2[1])
+    if (y < -5):
+        p_fwd.ChangeDutyCycle(-1.0*y)
+        p_back.ChangeDutyCycle(0)
+    elif (y > 5):
+        p_back.ChangeDutyCycle(1.0*y)
+        p_fwd.ChangeDutyCycle(0)
+    else:
+        p_fwd.ChangeDutyCycle(0)
+        p_back.ChangeDutyCycle(0)
+        
+    if (x < -5):
+        p_right.ChangeDutyCycle(-1.0*x)      
+        p_left.ChangeDutyCycle(0)      
+    elif (x > 5):
+        p_left.ChangeDutyCycle(1.0*x)      
+        p_right.ChangeDutyCycle(0)      
+    else:
+        p_right.ChangeDutyCycle(0)      
+        p_left.ChangeDutyCycle(0)      
+
+    print x,y
    
 client_socket.close()
