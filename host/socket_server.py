@@ -30,12 +30,6 @@ class TextPrint:
     
 pygame.init()
 
-#while True:
-    #data = bytearray('DEADBEEF'.decode('hex'))
-    #data = "foo"
-    #client_socket.sendall(data)
-    
- 
 # Set the width and height of the screen [width,height]
 size = [500, 700]
 screen = pygame.display.set_mode(size)
@@ -121,9 +115,10 @@ while done==False:
     axes = joystick.get_numaxes()
     textPrint.printscreen(screen, "Number of axes: {}".format(axes) )
     textPrint.indent()
-    
+    data = [] 
     for i in range( axes ):
         axis = joystick.get_axis( i )
+        data.append("%02d," % (float(`axis`)*100))
         textPrint.printscreen(screen, "Axis {} value: {:>6.3f}".format(i, axis) )
     textPrint.unindent()
         
@@ -150,6 +145,9 @@ while done==False:
     textPrint.unindent()
     
     # ALL CODE TO DRAW SHOULD GO ABOVE THIS COMMENT
+    #data = axis 
+    client_socket.sendall(''.join(data))
+    #client_socket.sendall("foo")
     
     # Go ahead and update the screen with what we've drawn.
     pygame.display.flip()
