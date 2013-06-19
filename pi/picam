@@ -3,9 +3,9 @@
 # This script should find a v4l camera, and start streaming jpg video using mjpg-streamer
 # You will need mjpg_streamer installed with the necessary libraries at /usr/lib
 
-FRAMERATE=15
-RESOLUTION=640x480
-PORT=8000
+FRAMERATE=10
+RESOLUTION=320x240
+PORT=5002
 DEVICE=/dev/video0
 WEB_DIR=/var/www/mjpg_streamer
 # works on pi

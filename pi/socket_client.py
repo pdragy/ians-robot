@@ -28,33 +28,34 @@ p_right.start(0)
 p_back.start(0)
 p_fwd.start(0)
 
-port = 5000
+port = 5001
 ip = "192.168.1.118"
 
 #Create a socket connection for connecting to the server:
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 client_socket.connect((ip, port))
 
+dd = 9
 while True:
     #Recieve data from the server:
     data = client_socket.recv(1024)
     data2 = data.split( ",")
     x = int(data2[0])
     y = int(data2[1])
-    if (y < -5):
+    if (y < -1*dd):
         p_fwd.ChangeDutyCycle(-1.0*y)
         p_back.ChangeDutyCycle(0)
-    elif (y > 5):
+    elif (y > dd):
         p_back.ChangeDutyCycle(1.0*y)
         p_fwd.ChangeDutyCycle(0)
     else:
         p_fwd.ChangeDutyCycle(0)
         p_back.ChangeDutyCycle(0)
         
-    if (x < -5):
+    if (x < -1*dd):
         p_right.ChangeDutyCycle(-1.0*x)      
         p_left.ChangeDutyCycle(0)      
-    elif (x > 5):
+    elif (x > dd):
         p_left.ChangeDutyCycle(1.0*x)      
         p_right.ChangeDutyCycle(0)      
     else:
