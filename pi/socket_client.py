@@ -65,6 +65,7 @@ while True:
             p_back.ChangeDutyCycle(1.0*y)
             p_fwd.ChangeDutyCycle(0)
         else:
+            y = 0
             p_fwd.ChangeDutyCycle(0)
             p_back.ChangeDutyCycle(0)
             
@@ -76,12 +77,13 @@ while True:
             p_left.ChangeDutyCycle(1.0*x)      
             p_right.ChangeDutyCycle(0)      
         else:
+            x = 0
             p_right.ChangeDutyCycle(0)      
             p_left.ChangeDutyCycle(0)      
 
     x_last = x
     y_last = y
-    print x,",",y
+    print "(", x,", ", y,")"
   
 print "closing client connection"
 client_socket.close()
