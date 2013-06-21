@@ -8,10 +8,10 @@ RESOLUTION=320x240
 PORT=5002
 DEVICE=/dev/video0
 WEB_DIR=/var/www/mjpg_streamer
-# works on pi
-MY_IP=`/sbin/ifconfig | grep 'inet addr:'| grep -v '127.0.0.1' | cut -d: -f2 | head -1 | awk {'printf("%s", $1)}'`
+# works on pi/linux
+MY_IP=`/sbin/ifconfig | /bin/grep 'inet addr:'| /bin/grep -v '127.0.0.1' | /usr/bin/cut -d: -f2 | /usr/bin/head -1 | /usr/bin/awk {'printf("%s", $1)'}`
 # works on osx 
-#MY_IP=`/sbin/ifconfig | grep 'inet '| grep -v '127.0.0.1' | cut -d' ' -f2 | head -1 | awk {'printf("%s", $1)}'`
+#MY_IP=`/sbin/ifconfig | /usr/bin/grep 'inet '| /usr/bin/grep -v '127.0.0.1' | /usr/bin/cut -d' ' -f2 | /usr/bin/head -1 | /usr/bin/awk {'printf("%s", $1)'}`
 
 HTML_TEMPLATE="
 <!DOCTYPE html> <html><body>
