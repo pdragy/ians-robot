@@ -1,8 +1,16 @@
-import  sys, socket
+#!/usr/bin/env python 
+
+import sys, socket
 import pygame
 import time
 
-port = 5000
+if (len(sys.argv) != 2):
+    print "expected port number!"
+    print "example: socket_server.py 5001"
+    exit(1)
+
+port = sys.argv[1]
+
 # Define some colors
 BLACK    = (   0,   0,   0)
 WHITE    = ( 255, 255, 255)
@@ -46,8 +54,6 @@ clock = pygame.time.Clock()
 pygame.joystick.init()
     
 # Get ready to print
-
-
 textPrint = TextPrint()
 
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # create the socket
@@ -81,7 +87,6 @@ while done==False:
             print("Joystick button pressed.")
         if event.type == pygame.JOYBUTTONUP:
             print("Joystick button released.")
-            
  
     # DRAWING STEP
     # First, clear the screen to white. Don't put other drawing commands
@@ -100,8 +105,6 @@ while done==False:
         pygame.display.flip()
         clock.tick(20)
         continue
-
-
     
     joystick = pygame.joystick.Joystick(0)
     joystick.init()
@@ -143,18 +146,17 @@ while done==False:
     textPrint.unindent()
     
     textPrint.unindent()
-    
-    # ALL CODE TO DRAW SHOULD GO ABOVE THIS COMMENT
-    #data = axis 
+   
+    # send the x and y axis value to socket server
     client_socket.sendall(''.join(data))
-    #client_socket.sendall("foo")
     
     # Go ahead and update the screen with what we've drawn.
     pygame.display.flip()
 
     # Limit to 20 frames per second
     clock.tick(20)
-    
+
+client_socket.sendall("999,999")
 socket.close()
 p.terminate()
 pygame.quit ()
