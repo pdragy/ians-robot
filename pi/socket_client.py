@@ -10,7 +10,7 @@ if (len(sys.argv) != 3):
     exit(1)
 
 ip = sys.argv[1]
-port = sys.argv[2]
+port = int(sys.argv[2])
 
 #port = 5001
 #ip = "192.168.1.118"

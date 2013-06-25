@@ -9,7 +9,7 @@ if (len(sys.argv) != 2):
     print "example: socket_server.py 5001"
     exit(1)
 
-port = sys.argv[1]
+port = int(sys.argv[1])
 
 # Define some colors
 BLACK    = (   0,   0,   0)
