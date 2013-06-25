@@ -11,10 +11,27 @@ if (len(sys.argv) != 3):
 
 client_ip = sys.argv[1]
 port = int(sys.argv[2])
+
+
+# get ip address of host 
 if sys.platform == "darwin":
     server_ip = subprocess.check_output("/sbin/ifconfig | /usr/bin/grep 'inet '| /usr/bin/grep -v '127.0.0.1' | /usr/bin/cut -d' ' -f2 | /usr/bin/head -1 | /usr/bin/awk {'printf(\"%s\", $1)'}", shell=True)
 else:
     server_ip = subprocess.check_output("/sbin/ifconfig | /bin/grep 'inet addr:'| /bin/grep -v '127.0.0.1' | /usr/bin/cut -d: -f2 | /usr/bin/head -1 | /usr/bin/awk {'printf(\"%s\", $1)'}", shell=True)
-#ssh_proc = Popen(['ssh', '-f', '-N', '-L', local_forward, local_user_host], stdin=PIPE, stdout=PIPE)
 
-print server_ip
+print "My IP:", server_ip
+
+run_path = os.path.dirname(os.path.realpath(__file__))
+client_script = run_path + "/pi/socket_client.py " + server_ip + " " + str(port)
+host_script = run_path + "/host/socket_server.py " + str(port)
+
+# here should start the server script
+print "Running ", host_script, "..."
+print host_script
+os.system(host_script) 
+
+# start the pi script
+print "Running ", client_script, "..."
+ssh_proc = subprocess.Popen(['ssh', '-o','StrictHostKeyChecking=no',  'paul@127.0.0.1',  '<<\'ENDSSH\'', 'python', '<', client_script], stdin=subprocess.PIPE)
+ssh_proc.communicate('password')
+
