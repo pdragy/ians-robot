@@ -4,7 +4,7 @@ import sys, socket
 import time
 import RPi.GPIO as GPIO
 
-if (len(sys.argv) != 3):
+if (len(sys.argv) < 3):
     print "expected server ip address and port number"
     print "example: socket_client.py 192.168.1.118 5001"
     exit(1)

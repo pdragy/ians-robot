@@ -4,7 +4,7 @@ import sys, socket
 import pygame
 import time
 
-if (len(sys.argv) != 2):
+if (len(sys.argv) < 2):
     print "expected port number!"
     print "example: socket_server.py 5001"
     exit(1)
