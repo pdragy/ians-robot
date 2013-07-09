@@ -3,7 +3,7 @@
 # This script should find a v4l camera, and start streaming jpg video using mjpg-streamer
 # You will need mjpg_streamer installed with the necessary libraries at /usr/lib
 
-FRAMERATE=10
+FRAMERATE=30
 RESOLUTION=320x240
 PORT=5002
 DEVICE=/dev/video0

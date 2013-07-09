@@ -31,11 +31,20 @@ GPIO.setup(10, GPIO.OUT)
 GPIO.setup(11, GPIO.OUT)
 GPIO.setup(13, GPIO.OUT)
 
+# PWM for camera pan/tilt
+GPIO.setup(15, GPIO.OUT)
+GPIO.setup(18, GPIO.OUT)
+
 p_back  = GPIO.PWM(11, 50) 
 p_fwd   = GPIO.PWM(13, 50) 
 p_left  = GPIO.PWM(8, 50)  
 p_right = GPIO.PWM(10, 50) 
 
+p_cam_lr  = GPIO.PWM(15, 50) 
+p_cam_ud   = GPIO.PWM(18, 50) 
+
+p_cam_lr.start(0)
+p_cam_ud.start(0)
 p_left.start(0)
 p_right.start(0)
 p_back.start(0)
@@ -46,13 +55,18 @@ client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 client_socket.connect((ip, port))
 
 dd = 9
+z_last = 0
 y_last = 0
 x_last = 0
 while True:
     #Recieve data from the server:
     data = client_socket.recv(1024).split(",")
+    #print "length",str(len(data))
     x = int(data[0])
     y = int(data[1])
+    z = int(data[2])
+    throttle = int(data[3])
+    #hat= int(data[4])
     # for now, anything larger than 100 for x is our signal to exit
     if (x > 100): 
         print "getting command to exit"
@@ -81,9 +95,24 @@ while True:
             p_right.ChangeDutyCycle(0)      
             p_left.ChangeDutyCycle(0)      
 
+    if (z != z_last):
+        if ((z < -1*dd) or (z > dd)):
+            print "changing z"
+            p_cam_lr.ChangeDutyCycle(abs(z-100)/15)
+        else:
+            #z = 0
+            if (z_last != 0):
+                print "changing z"
+                p_cam_lr.ChangeDutyCycle(6.67)
+
+
+
+    #p_cam_ud.ChangeDutyCycle(abs(z))
+    #p_cam_lr.ChangeDutyCycle(abs(throttle))
     x_last = x
     y_last = y
-    print "(", x,", ", y,")"
+    z_last = z
+    print "(", x,", ", y,",",z,",",throttle,")"
   
 print "closing client connection"
 client_socket.close()
