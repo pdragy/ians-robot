@@ -9,8 +9,10 @@ void setup()
 
 void loop()
 {
+   if (Serial.available() > 0) {
     blink(Serial.read() - '0');
     delay(1000);
+   }
 }
 
 void blink(int n) {

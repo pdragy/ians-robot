@@ -26,19 +26,19 @@ GPIO.output(5, 1)
 GPIO.output(7, 1)
 
 # set up the PWM pins for left/right forward/back control
-GPIO.setup(8,  GPIO.OUT)
-GPIO.setup(10, GPIO.OUT)
-GPIO.setup(11, GPIO.OUT)
-GPIO.setup(13, GPIO.OUT)
+GPIO.setup(16,  GPIO.OUT)
+GPIO.setup(12, GPIO.OUT)
+GPIO.setup(18, GPIO.OUT)
+GPIO.setup(15, GPIO.OUT)
 
-p_back  = GPIO.PWM(11, 50) 
-p_fwd   = GPIO.PWM(13, 50) 
-p_left  = GPIO.PWM(8, 50)  
-p_right = GPIO.PWM(10, 50) 
+#p_back  = GPIO.PWM(16, 50) 
+p_fwd   = GPIO.PWM(12, 40) 
+#p_left  = GPIO.PWM(18, 50)  
+p_right = GPIO.PWM(15, 40) 
 
-p_left.start(0)
+#p_left.start(0)
 p_right.start(0)
-p_back.start(0)
+#p_back.start(0)
 p_fwd.start(0)
 
 #Create a socket connection for connecting to the server:
@@ -60,26 +60,26 @@ while True:
     if (y != y_last):
         if (y < -1*dd):
             p_fwd.ChangeDutyCycle(-1.0*y)
-            p_back.ChangeDutyCycle(0)
+            #p_back.ChangeDutyCycle(0)
         elif (y > dd):
-            p_back.ChangeDutyCycle(1.0*y)
+            #p_back.ChangeDutyCycle(1.0*y)
             p_fwd.ChangeDutyCycle(0)
         else:
             y = 0
             p_fwd.ChangeDutyCycle(0)
-            p_back.ChangeDutyCycle(0)
+            #p_back.ChangeDutyCycle(0)
             
     if (x != x_last):
         if (x < -1*dd):
             p_right.ChangeDutyCycle(-1.0*x)      
-            p_left.ChangeDutyCycle(0)      
+            #p_left.ChangeDutyCycle(0)      
         elif (x > dd):
-            p_left.ChangeDutyCycle(1.0*x)      
+            #p_left.ChangeDutyCycle(1.0*x)      
             p_right.ChangeDutyCycle(0)      
         else:
             x = 0
             p_right.ChangeDutyCycle(0)      
-            p_left.ChangeDutyCycle(0)      
+            #p_left.ChangeDutyCycle(0)      
 
     x_last = x
     y_last = y
