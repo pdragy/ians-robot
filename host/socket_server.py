@@ -75,6 +75,8 @@ client_socket, address = server_socket.accept()
 print "Your IP address is: ", socket.gethostbyname(socket.gethostname())
 print "Server Waiting for client on port ", port
 
+hat_x = 0
+hat_y = 0
 # -------- Main Program Loop -----------
 while done==False:
     # EVENT PROCESSING STEP
@@ -118,11 +120,14 @@ while done==False:
     axes = joystick.get_numaxes()
     textPrint.printscreen(screen, "Number of axes: {}".format(axes) )
     textPrint.indent()
+    
+    # this array will hold all the values we are sending to the pi over tcp socket
     data = [] 
     for i in range( axes ):
         axis = joystick.get_axis( i )
         data.append("%02d," % (float(`axis`)*100))
         textPrint.printscreen(screen, "Axis {} value: {:>6.3f}".format(i, axis) )
+
     textPrint.unindent()
         
     buttons = joystick.get_numbuttons()
@@ -143,10 +148,15 @@ while done==False:
     for i in range( hats ):
         hat = joystick.get_hat( i )
         textPrint.printscreen(screen, "Hat {} value: {}".format(i, str(hat)) )
+        if   (i == 0): hat_x = hat_x + hat
+        elif (i == 1): hat_y = hat_y + hat
+
     textPrint.unindent()
     
     textPrint.unindent()
-   
+  
+    # append current hat values for camera position
+    data.append(hat_x + "," + hat_y)
     # send the x and y axis value to socket server
     client_socket.sendall(''.join(data))
     

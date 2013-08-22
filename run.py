@@ -2,7 +2,6 @@
 import os,sys
 import subprocess
 
-
 # this script should control everything
 if (len(sys.argv) < 3):
     print "expected 2 arguments, user@ip-address of raspberry pi and port number!"
@@ -11,7 +10,6 @@ if (len(sys.argv) < 3):
 
 client_ip = sys.argv[1]
 port = int(sys.argv[2])
-
 
 # get ip address of host 
 if sys.platform == "darwin":
@@ -32,6 +30,9 @@ os.system(host_script + " &> /dev/null &")
 # start the pi script
 print "Running ", client_script, "..."
 #ssh_proc = subprocess.Popen(['ssh', '-o','StrictHostKeyChecking=no',  'paul@127.0.0.1',  '<<\'ENDSSH\'', 'python', '<', client_script ], stdin=subprocess.PIPE)
-ssh_proc = subprocess.Popen(['ssh', '-o','StrictHostKeyChecking=no',  'paul@127.0.0.1',  '<<\'ENDSSH\'', 'echo raspberry | sudo -Sv &&  ls '], stdin=subprocess.PIPE)
-ssh_proc.communicate()[0]
+try: 
+    ssh_proc = subprocess.Popen(['ssh', '-o','StrictHostKeyChecking=no',  'paul@127.0.0.1',  '<<\'ENDSSH\'', 'echo raspberry | sudo -Sv &&  ls '], stdin=subprocess.PIPE)
+    ssh_proc.communicate()[0]
+except:
+    print "Couldn't connect to", client_ip
 #print foo
