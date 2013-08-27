@@ -1,0 +1,14 @@
+
+
+
+
+
+.build/uno/src/Serialtest.cpp : src/Serialtest.ino
+	@mkdir -p .build/uno/src
+	@echo [93msrc/Serialtest.ino[0m
+	@/usr/local/bin/ino preproc  -o $@ $^
+
+
+all : .build/uno/src/Serialtest.cpp
+	@true
+
