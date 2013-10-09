@@ -148,23 +148,24 @@ while done==False:
     for i in range( hats ):
         hat = joystick.get_hat( i )
         textPrint.printscreen(screen, "Hat {} value: {}".format(i, str(hat)) )
-        if   (i == 0): hat_x = hat_x + hat
-        elif (i == 1): hat_y = hat_y + hat
+        #if   (i == 0): hat_x = hat_x + hat
+        #elif (i == 1): hat_y = hat_y + hat
 
     textPrint.unindent()
     
     textPrint.unindent()
   
     # append current hat values for camera position
-    data.append(hat_x + "," + hat_y)
+    #data.append(hat_x + "," + hat_y)
     # send the x and y axis value to socket server
+    print ''.join(data)
     client_socket.sendall(''.join(data))
     
     # Go ahead and update the screen with what we've drawn.
     pygame.display.flip()
 
     # Limit to 20 frames per second
-    clock.tick(20)
+    clock.tick(10)
 
 client_socket.sendall("999,999")
 socket.close()
