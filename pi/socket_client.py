@@ -37,12 +37,14 @@ while True:
     #    time.sleep(100)
     x = int(data[0])
     y = int(data[1])
-    y_car = int((y + 100)/10 + 83)
-    x_car = int((x + 100)/200.0 * 179)
+    #y_car = int((y + 100)/10.0 + 83)
+    #x_car = int((x + 100)/200.0 * 179)
+    y_car = int(((y + 100)/200.0)*255)
+    x_car = int(((x + 100)/200.0)*255)
 
     ser.write('0')
-    ser.write(chr(x_car))
     ser.write(chr(y_car))
+    ser.write(chr(x_car))
     ser.write('1')
     ser.write('1')
     # for now, anything larger than 100 for x is our signal to exit
@@ -53,7 +55,7 @@ while True:
     y_last = y
     #print "(", x,", ", y,")"
     print "(", x_car,", ", y_car,")"
-    time.sleep(0.05)
+    #time.sleep(0.05)
   
 print "closing client connection"
 client_socket.close()
